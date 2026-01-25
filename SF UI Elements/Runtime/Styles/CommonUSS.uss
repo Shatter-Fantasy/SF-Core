@@ -96,6 +96,11 @@ SideBarLayout .side-bar{
 
 
 /* Foldout Styling */
+
+.unity-tab__content-container {
+    height: 100%;
+}
+
 .sf__foldout .unity-foldout__text{
     font-size: 48px;
 }
