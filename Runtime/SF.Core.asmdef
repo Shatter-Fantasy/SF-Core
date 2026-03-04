@@ -3,7 +3,8 @@
     "rootNamespace": "SF.Core",
     "references": [
         "GUID:5769175a692bee24cbd874f396613351",
-        "GUID:e0cd26848372d4e5c891c569017e11f1"
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:2665a8d13d1b3f18800f46e256720795"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -17,6 +18,11 @@
             "name": "shatter-fantasy.sf-ui-elements",
             "expression": "0.0.1",
             "define": "SF_UI_ELEMENTS"
+        },
+        {
+            "name": "shatterfantasy.sf-core",
+            "expression": "0.0.1",
+            "define": "SF_CORE"
         }
     ],
     "noEngineReferences": false
