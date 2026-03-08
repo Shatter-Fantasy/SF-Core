@@ -3,7 +3,8 @@
     "rootNamespace": "SF.Core",
     "references": [
         "GUID:5769175a692bee24cbd874f396613351",
-        "GUID:e0cd26848372d4e5c891c569017e11f1"
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:68abc65edeb6a19489adf3e91e68ac47"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
