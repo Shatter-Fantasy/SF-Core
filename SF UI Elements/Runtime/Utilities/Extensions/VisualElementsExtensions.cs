@@ -21,9 +21,10 @@ namespace SF.UIElements.Utilities
             {
                 name = name
             };
-            
             return newElement;
         }
+        
+        
         
         public static T AddRow<T>(this T parent) where T : VisualElement
         {
@@ -274,6 +275,19 @@ namespace SF.UIElements.Utilities
             if (target == null)
             {
                Debug.LogWarning("When trying to register a UI Event the target UI was null.");
+            }
+            
+            target?.RegisterCallback<TEventType>(callback);
+            return target;
+        }
+        
+        public static T Register<T,TEventType>(this T target, EventCallback<TEventType> callback)
+            where T : VisualElement
+            where TEventType : EventBase<TEventType>, new()
+        {
+            if (target == null)
+            {
+                Debug.LogWarning("When trying to register a UI Event the target UI was null.");
             }
             
             target?.RegisterCallback<TEventType>(callback);

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 using SF.Utilities.InteropServices;
 
-using UnityEditor;
-
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -69,9 +67,9 @@ namespace SF.Utilities.Shapes
     /// </summary>
     /// <remarks>
     ///     This class is not marked as abstract so it can be instantiated than assigned to on the fly
-    ///     while the initial instantiation can implement a constrcutor.
+    ///     while the initial instantiation can implement a constructor.
     ///     
-    ///     It also will use a struct for shape data to allow for some performance and memory usages when copying it's path data into stuff like Unity's <see cref="UnityEngine.PhysicsShape2D" class/>.
+    ///     It also will use a struct for shape data to allow for some performance and memory usages when copying it's path data into stuff like Unity's <see cref="UnityEngine.PhysicsShape2D"/> class.
     /// </remarks>
     public class ShapeFactory : MonoBehaviour
     {
@@ -84,15 +82,12 @@ namespace SF.Utilities.Shapes
 
         public ShapeFactory(List<Vector3> points)
         {
-            if(points != null)
-                Points = points;
-            else
-                points = new List<Vector3>();            
+            Points = points ?? new List<Vector3>();
         }
 
         /// <summary>
         /// Returns true if a Span was able to be made or false it it failed.
-        /// Also sends back a ref type of Span<Vector2> to use for any data you need it for.
+        /// Also sends back a ref type of Span[Vector2] to use for any data you need it for.
         /// </summary>
         /// <param name="spanPoints"></param>
         /// <returns></returns>
@@ -131,8 +126,10 @@ namespace SF.Utilities.Shapes
     {
         public static Mesh CreateMesh(Span<Vector3> vertices)
         {
-            Mesh mesh = new Mesh();
-            mesh.vertices = vertices.ToArray();
+            Mesh mesh = new Mesh
+            {
+                vertices = vertices.ToArray()
+            };
             int[] triangles = new int[3];
             for(int i = 0; i < vertices.Length; i++ )
             {
@@ -145,7 +142,6 @@ namespace SF.Utilities.Shapes
 
     public static class SFRendererUtilities
     {
-
         public static RenderTexture OutputTexture;
 
         public static Camera RenderCamera;
@@ -155,9 +151,9 @@ namespace SF.Utilities.Shapes
         public static Material DebugMaterial;
         public static Color OutlineColor = Color.green;
 
-        public static List<Mesh> DebugMeshes = new List<Mesh>();
+        public readonly static List<Mesh> DebugMeshes = new List<Mesh>();
 
-        public static void InitializeDebugMaterial()
+        private static void InitializeDebugMaterial()
         {
             DebugMaterial = new Material(Shader.Find("Unlit/Texture"))
             {
@@ -176,9 +172,10 @@ namespace SF.Utilities.Shapes
                 OutputTexture = new RenderTexture(descriptor);
 
             ProjectionMatrix = Matrix4x4.Ortho(
-                    -VirtualCameraSize, VirtualCameraSize,
-                    -VirtualCameraSize, VirtualCameraSize,
-                    RenderCamera.nearClipPlane, RenderCamera.farClipPlane
+                -VirtualCameraSize, VirtualCameraSize,
+                -VirtualCameraSize, VirtualCameraSize,
+                (RenderCamera != null) ? RenderCamera.nearClipPlane : 0,
+                (RenderCamera != null) ? RenderCamera.farClipPlane : 0
             );
 
             return ProjectionMatrix;
@@ -236,18 +233,18 @@ namespace SF.Utilities.Shapes
     {
         public Vector3 Position;
 
-        public List<ShapeEdge> ConnectededEdges;
+        public List<ShapeEdge> ConnectedEdges;
 
         public ShapePoint(Vector3 position)
         {
             Position = position;
-            ConnectededEdges = new List<ShapeEdge>();
+            ConnectedEdges = new List<ShapeEdge>();
         }
 
-        public ShapePoint(Vector3 position, List<ShapeEdge> connectededEdges)
+        public ShapePoint(Vector3 position, List<ShapeEdge> connectedEdges)
         {
             Position = position;
-            ConnectededEdges = connectededEdges;
+            ConnectedEdges = connectedEdges;
         }
 
         public static Vector3 ShapePointToVector3(ShapePoint shapePoint) => shapePoint;

@@ -12,22 +12,30 @@ namespace SF.Utilities
         public static Color GLColor;
         public static Material DrawHandleMaterial;
 
-        private const int k_GridGizmoVertexCount = 32000;
-        private const float k_GridGizmoDistanceFalloff = 50f;
-        
+        private const int GridGizmoVertexCount = 32000;
+        private const float GridGizmoDistanceFalloff = 50f;
+
         /// <summary>
         /// This is used to store the Viewport before doing a viewport clip during clipping operations. This allows for restoring the pre clipped viewport rect.
         /// </summary>
-        private static Rect _storedPreClippedViewPort = new();
+        private static Rect _storedPreClippedViewPort;
+
+        
+#region MyRegion
+        private static readonly int HandleZTest = Shader.PropertyToID("_HandleZTest");
+        private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
+#endregion
         public static void InitHandleMaterial(CompareFunction zTest = CompareFunction.Always)
         {
             if(!DrawHandleMaterial)
             {
                 Shader shader = Shader.Find("Hidden/Internal-Colored");
-                DrawHandleMaterial = new Material(shader);
-                DrawHandleMaterial.hideFlags = HideFlags.HideAndDontSave;
-                DrawHandleMaterial.SetFloat("_HandleZTest", (float)zTest);
-                DrawHandleMaterial.SetInt("_ZWrite", 0);
+                DrawHandleMaterial = new Material(shader)
+                {
+                    hideFlags = HideFlags.HideAndDontSave
+                };
+                DrawHandleMaterial.SetFloat(HandleZTest, (float)zTest);
+                DrawHandleMaterial.SetInt(ZWrite, 0);
             }
         }
         public static void ApplyHandleMaterial(CompareFunction zTest = CompareFunction.Always)
@@ -122,7 +130,13 @@ namespace SF.Utilities
             DrawLine(points3, points0, width);
         }
 
-        public static void DrawTraingle(Vector3 p1, Vector3 p2, Vector3 p3)
+        /// <summary>
+        /// Draws a triangle using Unity's GL (Graphics Library) API.
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <param name="p3"></param>
+        public static void DrawTriangle(Vector3 p1, Vector3 p2, Vector3 p3)
         {
             GL.Vertex(p1);
             GL.Vertex(p2);
@@ -291,7 +305,7 @@ namespace SF.Utilities
                 case GridLayout.CellLayout.Isometric:
                 case GridLayout.CellLayout.IsometricZAsY:
                 case GridLayout.CellLayout.Rectangle:
-                    int min = k_GridGizmoVertexCount / -32;
+                    int min = GridGizmoVertexCount / -32;
                     int max = min * -1;
                     int numCells = max - min;
                     RectInt bounds = new RectInt(min, min, numCells, numCells);
@@ -399,7 +413,7 @@ namespace SF.Utilities
                 vertex += topology == MeshTopology.Quads ? 4 : 2;
             }
 
-            var uv0 = new Vector2(k_GridGizmoDistanceFalloff, 0f);
+            var uv0 = new Vector2(GridGizmoDistanceFalloff, 0f);
             var uvs = new Vector2[vertex];
             var indices = new int[vertex];
             var colors = new Color[vertex];
@@ -431,7 +445,7 @@ namespace SF.Utilities
             Mesh mesh = new Mesh();
             mesh.hideFlags = HideFlags.HideAndDontSave;
             int vertex = 0;
-            int max = k_GridGizmoVertexCount / (2 * (6 * 2));
+            int max = GridGizmoVertexCount / (2 * (6 * 2));
             max = (max / 4) * 4;
             int min = -max;
             float numVerticalCells = 6 * (max / 4);
@@ -487,7 +501,7 @@ namespace SF.Utilities
                 uvs2[vertex + 1] = new Vector2(0f, drawDiagOffset + drawDiagTotal);
                 vertex += 2;
             }
-            var uv0 = new Vector2(k_GridGizmoDistanceFalloff, 0f);
+            var uv0 = new Vector2(GridGizmoDistanceFalloff, 0f);
             var indices = new int[totalVertices];
             var uvs = new Vector2[totalVertices];
             var colors = new Color[totalVertices];
