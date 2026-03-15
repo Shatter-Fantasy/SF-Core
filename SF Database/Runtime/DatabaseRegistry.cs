@@ -61,6 +61,20 @@ namespace SF.DataModule
             _registry.RegisteredDatabases.TryGetValue(typeof(TDatabase), out var database);
             return (TDatabase)database;
         }
+        
+        public static bool TryGetDatabase<TDatabase>(out TDatabase foundDatabase) where TDatabase : SFDatabase
+        {
+            foundDatabase = null;
+            
+            if (_registry == null)
+                return false;
+
+            if (!_registry.RegisteredDatabases.TryGetValue(typeof(TDatabase), out var database)) 
+                return false;
+            
+            foundDatabase = (TDatabase)database;
+            return true;
+        }
 
         public static void RegisterDatabase<TDatabase>(TDatabase database) where TDatabase : SFDatabase
         {
